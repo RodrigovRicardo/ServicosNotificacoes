@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar notificação</title>
+</head>
+<body>
+<h1>Criar notificação</h1>
+<a href="/notificacoes">Consultar notificações</a>
+
+<form action="/notificacoes" method="post">
+  <p>
+    <label for="destinatarios">Destinatários:</label><br>
+    <input type="text"
+           id="destinatarios"
+           name="destinatarios"
+           placeholder="pessoa1@exemplo.pt, pessoa2@exemplo.pt">
+  </p>
+
+  <p>
+    <label for="assunto">Assunto:</label><br>
+    <input type="text"
+           id="assunto"
+           name="assunto">
+  </p>
+
+  <p>
+    <label for="conteudo">Conteúdo:</label><br>
+    <textarea id="conteudo"
+              name="conteudo"
+              rows="6"
+              cols="40"></textarea>
+  </p>
+
+  <button type="submit">Enviar notificação</button>
+</form>
+
+<p th:text="${mensagem}"></p>
+</body>
+</html>

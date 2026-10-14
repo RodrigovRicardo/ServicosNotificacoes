@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalhes da notificação</title>
+</head>
+<body>
+<h1>Detalhes da notificação</h1>
+<a th:href="@{/}">Página inicial</a>
+
+<p>
+  <strong>ID:</strong>
+  <span th:text="${notificacao.id}"></span>
+</p>
+
+<p>
+  <strong>Assunto:</strong>
+  <span th:text="${notificacao.assunto}"></span>
+</p>
+
+<p><strong>Conteúdo:</strong></p>
+<pre th:text="${notificacao.conteudo}"></pre>
+
+<p><strong>Destinatários:</strong></p>
+<ul>
+  <li th:each="destinatario : ${notificacao.destinatarios}"
+      th:text="${destinatario}">
+  </li>
+</ul>
+
+<a href="/notificacoes">Voltar à lista</a>
+</body>
+</html>

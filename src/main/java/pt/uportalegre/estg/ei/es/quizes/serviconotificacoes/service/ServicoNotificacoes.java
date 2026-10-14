@@ -1,10 +1,33 @@
 package pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service;
 
 import org.springframework.stereotype.Service;
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.email.EnvioEmail;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.repository.NotificacaoRepository;
+import java.util.List;
 
 @Service
 public class ServicoNotificacoes {
+
+    private final NotificacaoRepository notificacaoRepository;
+    private final EnvioEmail envioEmail;
+
+    public ServicoNotificacoes(
+            NotificacaoRepository notificacaoRepository,
+            EnvioEmail envioEmail) {
+
+        this.notificacaoRepository = notificacaoRepository;
+        this.envioEmail = envioEmail;
+    }
+
+    public Notificacao submeterNotificacao(Notificacao notificacao) {
+
+        validarNotificacao(notificacao);
+
+        envioEmail.enviar(notificacao);
+
+        return notificacaoRepository.save(notificacao);
+    }
 
     public void validarNotificacao(Notificacao notificacao) {
 
@@ -30,5 +53,15 @@ public class ServicoNotificacoes {
                     campo + " é obrigatório."
             );
         }
+    }
+    public List<Notificacao> listarNotificacoes() {
+        return notificacaoRepository.findAll();
+    }
+
+    public Notificacao consultarNotificacao(Long id) {
+        return notificacaoRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Notificação não encontrada.")
+                );
     }
 }

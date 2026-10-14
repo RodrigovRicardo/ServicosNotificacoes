@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Notificações</title>
+</head>
+<body>
+<h1>Notificações</h1>
+<a th:href="@{/}">Página inicial</a>
+
+<p th:text="${mensagem}"></p>
+
+<a href="/notificacoes/nova">Criar notificação</a>
+
+<p th:if="${#lists.isEmpty(notificacoes)}">
+  Não existem notificações registadas.
+</p>
+
+<table th:unless="${#lists.isEmpty(notificacoes)}">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Assunto</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="notificacao : ${notificacoes}">
+    <td th:text="${notificacao.id}"></td>
+
+    <td>
+      <a th:href="@{/notificacoes/{id}(id=${notificacao.id})}"
+         th:text="${notificacao.assunto}">
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
