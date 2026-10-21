@@ -8,10 +8,6 @@
 <h1>Notificações</h1>
 <a th:href="@{/}">Página inicial</a>
 
-<p th:text="${mensagem}"></p>
-
-<a href="/notificacoes/nova">Criar notificação</a>
-
 <p th:if="${#lists.isEmpty(notificacoes)}">
   Não existem notificações registadas.
 </p>

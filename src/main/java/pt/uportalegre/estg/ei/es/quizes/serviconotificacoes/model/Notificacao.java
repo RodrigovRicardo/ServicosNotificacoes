@@ -28,10 +28,12 @@ public class Notificacao{
         return id;
     }
     public List<String> getDestinatarios() {
+
         return destinatarios;
     }
 
     public void setDestinatarios(List<String> destinatarios) {
+
         this.destinatarios = destinatarios;
     }
 

@@ -11,7 +11,6 @@ import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service.ServicoNotificacoes;
 
 import org.springframework.mail.MailException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,16 +33,10 @@ public class NotificacaoController {
     @PostMapping("/notificacoes")
     public String receberFormulario(
             @ModelAttribute Notificacao notificacao,
-            Model model,
-            RedirectAttributes redirectAttributes) {
+            Model model) {
 
         try {
             servicoNotificacoes.submeterNotificacao(notificacao);
-
-            redirectAttributes.addFlashAttribute(
-                    "mensagem",
-                    "Notificação enviada e registada."
-            );
 
             return "redirect:/notificacoes";
 

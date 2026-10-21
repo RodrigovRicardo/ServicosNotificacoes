@@ -60,8 +60,7 @@ public class ServicoNotificacoes {
 
     public Notificacao consultarNotificacao(Long id) {
         return notificacaoRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Notificação não encontrada.")
+                .orElseThrow(() -> new IllegalArgumentException("Notificação não encontrada.")
                 );
     }
 }

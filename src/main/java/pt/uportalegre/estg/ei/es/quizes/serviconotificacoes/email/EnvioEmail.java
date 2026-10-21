@@ -25,9 +25,7 @@ public class EnvioEmail {
         SimpleMailMessage mensagem = new SimpleMailMessage();
 
         mensagem.setFrom(remetente);
-        mensagem.setTo(
-                notificacao.getDestinatarios().toArray(new String[0])
-        );
+        mensagem.setTo(notificacao.getDestinatarios().toArray(new String[0]));
         mensagem.setSubject(notificacao.getAssunto());
         mensagem.setText(notificacao.getConteudo());
 
