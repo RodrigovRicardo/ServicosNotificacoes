@@ -1,0 +1,193 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: #f3f5f8;
+}
+
+body {
+    width: calc(100% - 32px);
+    max-width: 960px;
+    margin: 32px auto;
+    padding: 32px;
+    border: 1px solid #dce2ea;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #263244;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2 {
+    color: #172b46;
+    line-height: 1.3;
+}
+
+h1 {
+    margin: 0 0 16px;
+    font-size: 28px;
+}
+
+h2 {
+    margin-top: 32px;
+    font-size: 21px;
+}
+
+a {
+    color: #1d4ed8;
+    text-underline-offset: 3px;
+}
+
+a:hover {
+    color: #153a9f;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid #93b4ff;
+    outline-offset: 3px;
+}
+
+form {
+    max-width: 680px;
+    margin-top: 24px;
+}
+
+form p {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #aebaca;
+    border-radius: 6px;
+    background: #ffffff;
+    color: inherit;
+    font: inherit;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #2563eb;
+    outline: 2px solid #dbeafe;
+}
+
+textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+button {
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 6px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #153a9f;
+}
+
+.tabela {
+    margin: 24px 0;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    max-width: 360px;
+    padding: 12px;
+    border-bottom: 1px solid #dce2ea;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+}
+
+th {
+    background: #edf2f8;
+    color: #172b46;
+}
+
+tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+pre {
+    padding: 16px;
+    border: 1px solid #dce2ea;
+    border-radius: 6px;
+    background: #f8fafc;
+    font: inherit;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+li {
+    overflow-wrap: anywhere;
+}
+
+.estado {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.estado.PENDENTE {
+    background: #fef3c7;
+    color: #854d0e;
+}
+
+.estado.ENVIADA {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.estado.FALHADA {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.mensagem-erro {
+    padding: 12px;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+@media (max-width: 600px) {
+    body {
+        margin: 16px auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
