@@ -1,13 +1,16 @@
 package pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.email;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 
 @Service
-public class EnvioEmail {
+@Profile("!simulacao")
+public class EnvioEmail implements EnvioNotificacao {
 
     private final JavaMailSender mailSender;
     private final String remetente;
@@ -20,6 +23,7 @@ public class EnvioEmail {
         this.remetente = remetente;
     }
 
+    @Override
     public void enviar(Notificacao notificacao) {
 
         SimpleMailMessage mensagem = new SimpleMailMessage();

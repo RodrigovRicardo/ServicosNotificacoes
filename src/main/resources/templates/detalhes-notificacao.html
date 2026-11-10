@@ -1,33 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Detalhes da notificação</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalhes da notificação</title>
+    <link rel="stylesheet" href="../static/css/estilos.css" th:href="@{/css/estilos.css}">
 </head>
 <body>
-<h1>Detalhes da notificação</h1>
-<a th:href="@{/}">Página inicial</a>
+    <h1>Detalhes da notificação</h1>
+    <a th:href="@{/}">Página inicial</a>
 
-<p>
-  <strong>ID:</strong>
-  <span th:text="${notificacao.id}"></span>
-</p>
+    <p>
+        <strong>ID:</strong>
+        <span th:text="${notificacao.id}"></span>
+    </p>
 
-<p>
-  <strong>Assunto:</strong>
-  <span th:text="${notificacao.assunto}"></span>
-</p>
+    <p>
+        <strong>Assunto:</strong>
+        <span th:text="${notificacao.assunto}"></span>
+    </p>
 
-<p><strong>Conteúdo:</strong></p>
-<pre th:text="${notificacao.conteudo}"></pre>
+    <p><strong>Conteúdo:</strong></p>
+    <pre th:text="${notificacao.conteudo}"></pre>
 
-<p><strong>Destinatários:</strong></p>
-<ul>
-  <li th:each="destinatario : ${notificacao.destinatarios}"
-      th:text="${destinatario}">
-  </li>
-</ul>
+    <p>
+        <strong>Estado:</strong>
+        <span class="estado" th:classappend="${notificacao.estado}"
+              th:text="${notificacao.estado}"></span>
+    </p>
 
-<a href="/notificacoes">Voltar à lista</a>
+    <p><strong>Destinatários:</strong></p>
+    <ul>
+        <li th:each="destinatario : ${notificacao.destinatarios}"
+            th:text="${destinatario}"></li>
+    </ul>
+
+    <h2>Histórico de tentativas</h2>
+
+    <p>
+        Tentativas registadas:
+        <span th:text="${#lists.size(tentativas)}"></span>
+        / <span th:text="${maxTentativas}"></span>
+    </p>
+
+    <p th:if="${#lists.isEmpty(tentativas)}">
+        Não existem tentativas registadas no histórico.
+    </p>
+
+    <div class="tabela">
+        <table th:unless="${#lists.isEmpty(tentativas)}">
+            <thead>
+                <tr>
+                    <th>Tentativa</th>
+                    <th>Data e hora</th>
+                    <th>Resultado</th>
+                    <th>Erro</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tentativa : ${tentativas}">
+                    <td th:text="${tentativa.numero}"></td>
+                    <td th:text="${#temporals.format(tentativa.dataHora, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                    <td>
+                        <span class="estado" th:classappend="${tentativa.resultado}"
+                              th:text="${tentativa.resultado}"></span>
+                    </td>
+                    <td th:text="${tentativa.erro != null ? tentativa.erro : '-'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>Uma tentativa pendente ainda não tem resultado confirmado.</p>
+
+    <a th:href="@{/notificacao}">Voltar à lista</a>
 </body>
 </html>

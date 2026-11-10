@@ -1,59 +1,52 @@
 package pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service.ServicoNotificacoes;
-
-import org.springframework.mail.MailException;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service.ServicoTentativas;
 
 @Controller
 public class NotificacaoController {
 
-    private final ServicoNotificacoes servicoNotificacoes;
+    @Autowired
+    private ServicoNotificacoes servicoNotificacoes;
 
-    public NotificacaoController(ServicoNotificacoes servicoNotificacoes) {
-        this.servicoNotificacoes = servicoNotificacoes;
-    }
+    @Autowired
+    private ServicoTentativas servicoTentativas;
 
-    @GetMapping({"/", "/notificacoes/nova"})
+    @GetMapping({"/", "/notificacao/nova"})
     public String mostrarFormulario() {
         return "notificacao";
     }
 
-    @PostMapping("/notificacoes")
-    public String receberFormulario(
+    @PostMapping("/notificacao")
+    public String submeterFormulario(
             @ModelAttribute Notificacao notificacao,
             Model model) {
 
         try {
             servicoNotificacoes.submeterNotificacao(notificacao);
 
-            return "redirect:/notificacoes";
+            return "redirect:/notificacao";
 
         } catch (IllegalArgumentException erro) {
             model.addAttribute("mensagem", erro.getMessage());
 
-        } catch (MailException erro) {
-            model.addAttribute(
-                    "mensagem",
-                    "Não foi possível enviar o email."
-            );
         }
 
         return "notificacao";
     }
 
-    @GetMapping("/notificacoes")
+    @GetMapping("/notificacao")
     public String listarNotificacoes(Model model) {
 
         model.addAttribute(
@@ -64,7 +57,7 @@ public class NotificacaoController {
         return "lista-notificacoes";
     }
 
-    @GetMapping("/notificacoes/{id}")
+    @GetMapping("/notificacao/{id}")
     public String consultarNotificacao(
             @PathVariable Long id,
             Model model) {
@@ -74,6 +67,8 @@ public class NotificacaoController {
                     "notificacao",
                     servicoNotificacoes.consultarNotificacao(id)
             );
+            model.addAttribute("tentativas", servicoTentativas.consultarHistorico(id));
+            model.addAttribute("maxTentativas", servicoTentativas.getMaxTentativas());
         } catch (IllegalArgumentException erro) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,

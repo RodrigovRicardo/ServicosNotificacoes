@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Notificações</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notificações</title>
+    <link rel="stylesheet" href="../static/css/estilos.css" th:href="@{/css/estilos.css}">
 </head>
 <body>
-<h1>Notificações</h1>
-<a th:href="@{/}">Página inicial</a>
+    <h1>Notificações</h1>
+    <a th:href="@{/}">Página inicial</a>
 
-<p th:if="${#lists.isEmpty(notificacoes)}">
-  Não existem notificações registadas.
-</p>
+    <p th:if="${#lists.isEmpty(notificacoes)}">
+        Não existem notificações registadas.
+    </p>
 
-<table th:unless="${#lists.isEmpty(notificacoes)}">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Assunto</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="notificacao : ${notificacoes}">
-    <td th:text="${notificacao.id}"></td>
-
-    <td>
-      <a th:href="@{/notificacoes/{id}(id=${notificacao.id})}"
-         th:text="${notificacao.assunto}">
-      </a>
-    </td>
-  </tr>
-  </tbody>
-</table>
+    <div class="tabela">
+        <table th:unless="${#lists.isEmpty(notificacoes)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Assunto</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="notificacao : ${notificacoes}">
+                    <td th:text="${notificacao.id}"></td>
+                    <td>
+                        <a th:href="@{/notificacao/{id}(id=${notificacao.id})}"
+                           th:text="${notificacao.assunto}"></a>
+                    </td>
+                    <td>
+                        <span class="estado" th:classappend="${notificacao.estado}"
+                              th:text="${notificacao.estado}"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

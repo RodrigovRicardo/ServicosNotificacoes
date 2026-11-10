@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Criar notificação</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Criar notificação</title>
+    <link rel="stylesheet" href="../static/css/estilos.css" th:href="@{/css/estilos.css}">
 </head>
 <body>
-<h1>Criar notificação</h1>
-<a href="/notificacoes">Consultar notificações</a>
+    <h1>Criar notificação</h1>
+    <p>Após submeter, podes sair desta página e acompanhar o estado na lista.</p>
+    <a th:href="@{/notificacao}">Consultar notificações</a>
 
-<form action="/notificacoes" method="post">
-  <p>
-    <label for="destinatarios">Destinatários:</label><br>
-    <input type="text"
-           id="destinatarios"
-           name="destinatarios"
-           placeholder="pessoa1@exemplo.pt, pessoa2@exemplo.pt">
-  </p>
+    <form th:action="@{/notificacao}" method="post">
+        <p>
+            <label for="destinatarios">Destinatários:</label>
+            <input type="text"
+                   id="destinatarios"
+                   name="destinatarios"
+                   placeholder="pessoa1@exemplo.pt, pessoa2@exemplo.pt">
+        </p>
 
-  <p>
-    <label for="assunto">Assunto:</label><br>
-    <input type="text"
-           id="assunto"
-           name="assunto">
-  </p>
+        <p>
+            <label for="assunto">Assunto:</label>
+            <input type="text"
+                   id="assunto"
+                   name="assunto">
+        </p>
 
-  <p>
-    <label for="conteudo">Conteúdo:</label><br>
-    <textarea id="conteudo"
-              name="conteudo"
-              rows="6"
-              cols="40"></textarea>
-  </p>
+        <p>
+            <label for="conteudo">Conteúdo:</label>
+            <textarea id="conteudo"
+                      name="conteudo"
+                      rows="6"
+                      cols="40"></textarea>
+        </p>
 
-  <button type="submit">Enviar notificação</button>
-</form>
+        <button type="submit">Enviar notificação</button>
+    </form>
 
-<p th:text="${mensagem}"></p>
+    <p class="mensagem-erro" th:if="${mensagem != null}" th:text="${mensagem}"></p>
 </body>
 </html>

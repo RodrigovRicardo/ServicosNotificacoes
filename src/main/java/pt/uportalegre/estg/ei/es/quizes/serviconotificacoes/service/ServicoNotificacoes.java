@@ -1,66 +1,49 @@
 package pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service;
 
+import java.util.List;
+
+import jakarta.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.email.EnvioEmail;
+
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.EstadoNotificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.repository.NotificacaoRepository;
-import java.util.List;
 
 @Service
 public class ServicoNotificacoes {
 
-    private final NotificacaoRepository notificacaoRepository;
-    private final EnvioEmail envioEmail;
+    @Autowired
+    private NotificacaoRepository notificacaoRepository;
 
-    public ServicoNotificacoes(
-            NotificacaoRepository notificacaoRepository,
-            EnvioEmail envioEmail) {
+    @PostConstruct
+    public void inicializarEstadosExistentes() {
+        List<Notificacao> notificacoes = notificacaoRepository.findByEstadoIsNull();
 
-        this.notificacaoRepository = notificacaoRepository;
-        this.envioEmail = envioEmail;
+        for (Notificacao notificacao : notificacoes) {
+            notificacao.setEstado(EstadoNotificacao.ENVIADA);
+        }
+
+        if (!notificacoes.isEmpty()) {
+            notificacaoRepository.saveAll(notificacoes);
+        }
     }
 
     public Notificacao submeterNotificacao(Notificacao notificacao) {
-
-        validarNotificacao(notificacao);
-
-        envioEmail.enviar(notificacao);
+        notificacao.setEstado(EstadoNotificacao.PENDENTE);
 
         return notificacaoRepository.save(notificacao);
     }
 
-    public void validarNotificacao(Notificacao notificacao) {
-
-        if (notificacao.getDestinatarios() == null
-                || notificacao.getDestinatarios().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Indica pelo menos um destinatário."
-            );
-        }
-
-        for (String destinatario : notificacao.getDestinatarios()) {
-            validarCampoObrigatorio(destinatario, "Destinatário");
-        }
-
-        validarCampoObrigatorio(notificacao.getAssunto(), "Assunto");
-        validarCampoObrigatorio(notificacao.getConteudo(), "Conteúdo");
-    }
-
-    private void validarCampoObrigatorio(String valor, String campo) {
-
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(
-                    campo + " é obrigatório."
-            );
-        }
-    }
     public List<Notificacao> listarNotificacoes() {
         return notificacaoRepository.findAll();
     }
 
     public Notificacao consultarNotificacao(Long id) {
         return notificacaoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Notificação não encontrada.")
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Notificação não encontrada.")
                 );
     }
 }
