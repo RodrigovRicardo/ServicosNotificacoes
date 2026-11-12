@@ -1,7 +1,7 @@
 package pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.dto.NotificacaoDTO;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.EstadoNotificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.repository.NotificacaoRepository;
@@ -28,19 +29,22 @@ class ServicoNotificacoesTest {
 
     @Test
     void deveGuardarSubmissaoComoPendente() {
-        Notificacao notificacao = new Notificacao();
-        notificacao.setDestinatarios(List.of("pessoa@exemplo.pt"));
-        notificacao.setAssunto("Teste");
-        notificacao.setConteudo("Mensagem de teste.");
-        notificacao.setEstado(EstadoNotificacao.ENVIADA);
+        NotificacaoDTO notificacaoDTO = new NotificacaoDTO(
+                List.of("pessoa@exemplo.pt"),
+                "Teste",
+                "Mensagem de teste."
+        );
 
-        when(notificacaoRepository.save(notificacao)).thenReturn(notificacao);
+        when(notificacaoRepository.save(any(Notificacao.class)))
+                .thenAnswer(invocacao -> invocacao.getArgument(0));
 
-        Notificacao resultado = servicoNotificacoes.submeterNotificacao(notificacao);
+        Notificacao resultado = servicoNotificacoes.submeterNotificacao(notificacaoDTO);
 
-        assertSame(notificacao, resultado);
+        assertEquals(notificacaoDTO.getDestinatarios(), resultado.getDestinatarios());
+        assertEquals(notificacaoDTO.getAssunto(), resultado.getAssunto());
+        assertEquals(notificacaoDTO.getConteudo(), resultado.getConteudo());
         assertEquals(EstadoNotificacao.PENDENTE, resultado.getEstado());
-        verify(notificacaoRepository).save(notificacao);
+        verify(notificacaoRepository).save(resultado);
     }
 
     @Test

@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.dto.NotificacaoDTO;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.EstadoNotificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.repository.NotificacaoRepository;
@@ -30,8 +31,11 @@ public class ServicoNotificacoes {
         }
     }
 
-    public Notificacao submeterNotificacao(Notificacao notificacao) {
-        notificacao.setEstado(EstadoNotificacao.PENDENTE);
+    public Notificacao submeterNotificacao(NotificacaoDTO notificacaoDTO) {
+        Notificacao notificacao = new Notificacao();
+        notificacao.setDestinatarios(notificacaoDTO.getDestinatarios());
+        notificacao.setAssunto(notificacaoDTO.getAssunto());
+        notificacao.setConteudo(notificacaoDTO.getConteudo());
 
         return notificacaoRepository.save(notificacao);
     }

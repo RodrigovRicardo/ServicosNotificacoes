@@ -27,6 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.dto.NotificacaoDTO;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.EstadoNotificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.TentativaEnvio;
@@ -130,7 +131,7 @@ class NotificacaoControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/notificacao"));
 
-        ArgumentCaptor<Notificacao> captor = ArgumentCaptor.forClass(Notificacao.class);
+        ArgumentCaptor<NotificacaoDTO> captor = ArgumentCaptor.forClass(NotificacaoDTO.class);
         verify(servicoNotificacoes).submeterNotificacao(captor.capture());
         assertEquals(
                 List.of("pessoa1@exemplo.pt", "pessoa2@exemplo.pt"),
@@ -140,7 +141,7 @@ class NotificacaoControllerTest {
     @Test
     void deveMostrarErroDoServicoNoFormulario() throws Exception {
         doThrow(new IllegalArgumentException("Assunto é obrigatório."))
-                .when(servicoNotificacoes).submeterNotificacao(any(Notificacao.class));
+                .when(servicoNotificacoes).submeterNotificacao(any(NotificacaoDTO.class));
 
         mockMvc.perform(post("/notificacao")
                         .param("destinatarios", "pessoa@exemplo.pt")

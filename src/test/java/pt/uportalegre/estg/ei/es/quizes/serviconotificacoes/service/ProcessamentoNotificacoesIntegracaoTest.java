@@ -3,7 +3,11 @@ package pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,10 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.MockMvc;
 
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.dto.NotificacaoDTO;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.email.EnvioEmailSimulado;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.email.EnvioNotificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.EstadoNotificacao;
@@ -26,10 +33,14 @@ import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.repository.NotificacaoRepository;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.repository.TentativaEnvioRepository;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles({"teste", "simulacao"})
 @TestPropertySource(locations = "classpath:application-teste.properties")
 class ProcessamentoNotificacoesIntegracaoTest {
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Autowired
     private ServicoNotificacoes servicoNotificacoes;
@@ -65,11 +76,38 @@ class ProcessamentoNotificacoesIntegracaoTest {
     }
 
     private Notificacao submeterNotificacao() {
-        Notificacao notificacao = new Notificacao();
-        notificacao.setDestinatarios(List.of("pessoa1@exemplo.pt", "pessoa2@exemplo.pt"));
-        notificacao.setAssunto("Teste de integração");
-        notificacao.setConteudo("Mensagem sem envio real.");
-        return servicoNotificacoes.submeterNotificacao(notificacao);
+        NotificacaoDTO notificacaoDTO = new NotificacaoDTO(
+                List.of("pessoa1@exemplo.pt", "pessoa2@exemplo.pt"),
+                "Teste de integração",
+                "Mensagem sem envio real."
+        );
+        return servicoNotificacoes.submeterNotificacao(notificacaoDTO);
+    }
+
+    @Test
+    void deveIgnorarEstadoEIdEnviadosPeloFormulario() throws Exception {
+        mockMvc.perform(post("/notificacao")
+                        .param("destinatarios", "pessoa1@exemplo.pt, pessoa2@exemplo.pt")
+                        .param("assunto", "Submissão com DTO")
+                        .param("conteudo", "Mensagem de teste.")
+                        .param("estado", "ENVIADA")
+                        .param("id", "-42"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/notificacao"));
+
+        List<Notificacao> pendentes = notificacaoRepository.findByEstadoIn(
+                List.of(EstadoNotificacao.PENDENTE)
+        );
+        assertEquals(1, notificacaoRepository.count());
+        assertEquals(1, pendentes.size());
+        Notificacao guardada = pendentes.get(0);
+        assertNotNull(guardada.getId());
+        assertNotEquals(-42L, guardada.getId());
+        assertEquals(EstadoNotificacao.PENDENTE, guardada.getEstado());
+        assertEquals("Submissão com DTO", guardada.getAssunto());
+        assertEquals("Mensagem de teste.", guardada.getConteudo());
+        assertEquals(Set.of("pessoa1@exemplo.pt", "pessoa2@exemplo.pt"),
+                Set.copyOf(guardada.getDestinatarios()));
     }
 
     @Test

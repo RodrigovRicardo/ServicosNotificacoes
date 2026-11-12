@@ -48,3 +48,10 @@ Os testes de contexto e integração ativam os perfis `teste` e `simulacao`. A c
 H2 é uma dependência apenas de teste. Os testes de integração validam o mapeamento JPA e a persistência, mas não substituem a confirmação final no MySQL utilizado pela aplicação.
 
 Os slides usam `@MockBean`; no Spring Boot 4 deste projeto utiliza-se `@MockitoBean` para substituir os serviços nos testes Web. A configuração do Surefire inclui o agente Mockito para compatibilidade com JDKs recentes.
+
+
+## DTO de submissão
+
+O formulário é recebido como `NotificacaoDTO`, com destinatarios, assunto e conteudo. O serviço converte esses dados numa nova entidade e define PENDENTE. ID e estado não fazem parte do DTO. As páginas e os pedidos Postman mantêm os mesmos campos e endereços.
+
+Origem: exemplo `ClienteDTO` de `JPA.pptx`, diapositivos 20 e 21, com classe simples, construtores e conversão manual. O exemplo do professor é de saída; aqui a estrutura foi adaptada à entrada do formulário. Não foi acrescentada uma biblioteca de mapeamento.

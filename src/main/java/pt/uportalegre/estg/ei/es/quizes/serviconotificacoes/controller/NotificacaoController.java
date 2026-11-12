@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.model.Notificacao;
+import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.dto.NotificacaoDTO;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service.ServicoNotificacoes;
 import pt.uportalegre.estg.ei.es.quizes.serviconotificacoes.service.ServicoTentativas;
 
@@ -30,11 +30,11 @@ public class NotificacaoController {
 
     @PostMapping("/notificacao")
     public String submeterFormulario(
-            @ModelAttribute Notificacao notificacao,
+            @ModelAttribute NotificacaoDTO notificacaoDTO,
             Model model) {
 
         try {
-            servicoNotificacoes.submeterNotificacao(notificacao);
+            servicoNotificacoes.submeterNotificacao(notificacaoDTO);
 
             return "redirect:/notificacao";
 
